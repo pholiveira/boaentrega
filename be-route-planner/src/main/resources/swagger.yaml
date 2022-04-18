@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: be-route-planner
+  description: Serviço responsável por planejar a melhor rota a partir de parâmetros
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8089
+    description: dev
+
+paths:
+  /internal/route:
+    post:
+      tags:
+        - Internal
+      summary: Retorna o plano de rota mais eficiente
+      operationId: internalRoutePost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: arrays
+              items:
+                $ref: "#/components/schemas/routeRequest"
+      responses:
+        '200': # status code
+          description: Retorna o plano de rota
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/routeResponse"
+        '400': # status code
+          description: Retorna o objeto de plano
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+
+components:
+  schemas:
+    routeRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID do armazem
+        latitude:
+          type: string
+          description: Latitude do armazem
+        longitude:
+          type: string
+          description: Longitude do armazem
+        schedule:
+          type: string
+          description: Horário programada para saída do armazem
+    routeResponse:
+      type: object
+      properties:
+        distanceUnit:
+          type: string
+          description: Unidade de distância
+        durationUnit:
+          type: string
+          description: Unidade de duração
+        travelDistance:
+          type: integer
+          description: Distância do percurso
+        travelDuration:
+          type: integer
+          description: Duração do percurso
+        startTime:
+          type: localDateTime
+          description: Data inicio percurso
+        endTime:
+          type: localDateTime
+          description: Data fim percurso
+        toolZone:
+          type: integer
+          description: Zonas com pedágio
+        routerLeg:
+          $ref: '#/components/schemas/routerLeg'
+          description: Caminhos para percurso
+    routerLeg:
+      type: object
+      properties:
+        originId:
+          type: string
+          description: Id do armazém de origem
+        originLatitude:
+          type: string
+          description: Latitude do armazém de origem
+        originLongitude:
+          type: string
+          description: Latitude do armazém de origem
+        originStartDate:
+          type: localDateTime
+          description: Data e hora da saída do armazém de origem
+        destinationId:
+          type: string
+          description: Id do armazém de detino
+        destinationLatitude:
+          type: string
+          description: Latitude do armazém de destino
+        destinationLongitude:
+          type: string
+          description: Latitude do armazém de destino
+    error:
+      type: object
+      properties:
+        erro:
+          $ref: "#/components/schemas/errorDetail"
+    errorDetail:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Messagem de erro
+        code:
+          type: string
+          description: Código da mensagem

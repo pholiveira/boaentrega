@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  title: be-transport-budget
+  description:
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: dev
+
+paths:
+  /public/budget/{clientId}:
+    get:
+      tags:
+        - public
+      summary: Retorna orçamento para destino informado
+      operationId: publicBudgetGet
+      parameters:
+        - $ref: "#/components/parameters/clientId"
+        - $ref: "#/components/parameters/origin"
+        - $ref: "#/components/parameters/destination"
+      responses:
+        '200':    # status code
+          description: Retorna o orçamento
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/budgetResponse"
+        '400': # status code
+          description: Retorna o objeto de orçamento
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+
+components:
+  parameters:
+    clientId:
+      name: clientId
+      in: path
+      required: true
+      description: ""
+      example: ""
+      schema:
+        type: integer
+    origin:
+      name: postalcodeOrigin
+      in: header
+      required: true
+      description: ""
+      example: ""
+      schema:
+        type: string
+    destination:
+      name: postalcodeDestination
+      in: header
+      required: true
+      description: ""
+      example: ""
+      schema:
+        type: string
+  schemas:
+    budgetResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id do orçamento
+        timeToDelivery:
+          type: string
+          description: Prazo de entrega
+        price:
+          type: string
+          description: Valor total
+    error:
+      type: object
+      properties:
+        erro:
+          $ref: "#/components/schemas/errorDetail"
+    errorDetail:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Messagem de erro
+        code:
+          type: string
+          description: Código da mensagem

@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: be-warehouse-manager
+  description:
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8088
+    description: dev
+
+paths:
+  /internal/available-warehouse:
+    get:
+      tags:
+        - Internal
+      summary: Retorna a lista de armazens disponíveis entre a origem e destino
+      operationId: internalAvaiableGet
+      parameters:
+        - $ref: "#/components/parameters/origin"
+        - $ref: "#/components/parameters/destination"
+      responses:
+        '200':    # status code
+          description: Retorna a lista de armazens
+          content:
+            application/json:
+              schema:
+                type: arrays
+                items:
+                  $ref: "#/components/schemas/warehouseResponse"
+        '400': # status code
+          description: Retorna a lista de armazens
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+
+components:
+  parameters:
+    clientId:
+      name: api-id-client
+      in: header
+      required: true
+      description: ""
+      example: ""
+      schema:
+        type: string
+    origin:
+      name: postalcodeOrigin
+      in: query
+      required: true
+      description: ""
+      example: ""
+      schema:
+        type: long
+    destination:
+      name: postalcodeDestination
+      in: query
+      required: true
+      description: ""
+      example: ""
+      schema:
+        type: long
+  schemas:
+    warehouseResponse:
+      type: object
+      properties:
+        id:
+          type: long
+          description: Identificador do armazem
+        latitude:
+          type: string
+          description: Latitude do armazem
+        longitude:
+          type: string
+          description: Longitude do armazem
+        schedule:
+          type: string
+          description: Horário programada para saída do armazem
+    error:
+      type: object
+      properties:
+        erro:
+          $ref: "#/components/schemas/errorDetail"
+    errorDetail:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Messagem de erro
+        code:
+          type: string
+          description: Código da mensagem
